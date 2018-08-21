@@ -1,81 +1,60 @@
 <!doctype html>
 <html lang="en">
- <head>
+
+<head>
   <meta charset="utf-8">
-  <title>Grid Garden - A game for learning CSS grid layout</title>
+  <title>Grid Garden - A game for learning JavaScript</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href='https://fonts.googleapis.com/css?family=PT+Sans|Autour+One|Source+Code+Pro' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/style.css">
 </head>
- <body>
+
+<body>
   <section id="sidebar">
     <div class="header">
       <div>
         <h1 class="title">Playground</h1>
       </div>
     </div>
-    <p id="instructions">
-      <button>Execute</button>
-    </p>
+    <div id="instructions">
+      <p>Game</p>
+      <button id="play" class="control">Play</button>
+      <button id="stop" class="control">Stop</button>
+      <p>Controls</p>
+      <button id="water" class="control">Water</button>
+      <button id="poison" class="control">Poison</button>
+    </div>
   </section>
   <section id="view">
     <div id="board">
       <div id="overlay">
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
+        <span class="plot" id="0"></span>
+        <span class="plot" id="1"></span>
+        <span class="plot" id="2"></span>
+        <span class="plot" id="3"></span>
+        <span class="plot" id="4"></span>
+        <span class="plot" id="5"></span>
+        <span class="plot" id="6"></span>
+        <span class="plot" id="7"></span>
+        <span class="plot" id="8"></span>
+        <span class="plot" id="9"></span>
+        <span class="plot" id="10"></span>
+        <span class="plot" id="11"></span>
+        <span class="plot" id="12"></span>
+        <span class="plot" id="13"></span>
+        <span class="plot" id="14"></span>
+        <span class="plot" id="15"></span>
+        <span class="plot" id="16"></span>
+        <span class="plot" id="17"></span>
+        <span class="plot" id="18"></span>
+        <span class="plot" id="19"></span>
+        <span class="plot" id="20"></span>
+        <span class="plot" id="21"></span>
+        <span class="plot" id="22"></span>
+        <span class="plot" id="23"></span>
+        <span class="plot" id="24"></span>
       </div>
       <div id="plants">
-        <span class="plot">
-          <img src="images/carrots.svg" width="100%" class="carrot" />
-        </span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot">
-          <img src="images/carrots.svg" width="100%" class="carrot" />
-        </span>
         <span class="plot"></span>
         <span class="plot"></span>
         <span class="plot"></span>
@@ -89,40 +68,25 @@
         <span class="plot"></span>
         <span class="plot"></span>
         <span class="plot"></span>
-        <span class="plot">
-          <img src="images/weeds.svg" width="100%" id="weed" />
-        </span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
         <span class="plot"></span>
         <span class="plot"></span>
       </div>
       <div id="garden">
-        <span class="plot">
-          <img src="images/water.svg" width="100%" class="water" />
-        </span>
-        <span class="plot">
-         </span>
         <span class="plot"></span>
         <span class="plot"></span>
         <span class="plot"></span>
         <span class="plot"></span>
         <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot">
-          <img src="images/water.svg" width="100%" class="water" />
-        </span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot">
-          <img src="images/water.svg" width="100%" class="water" />
-        </span>
         <span class="plot"></span>
         <span class="plot"></span>
         <span class="plot"></span>
@@ -170,23 +134,119 @@
         <span class="plot"></span>
         <span class="plot"></span>
         <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
-        <span class="plot"></span>
       </div>
     </div>
   </section>
+  <script>
+    const overlay = document.getElementById('overlay');
+    const plants = document.getElementById('plants');
+    const garden = document.getElementById('garden');
+    const water = document.getElementById('water');
+    const poison = document.getElementById('poison');
+    const play = document.getElementById('play');
+    const stop = document.getElementById('stop');
+    let selection;
+    let intervals = {
+      seedWeed: null,
+      killWeed: null,
+      growCarrots: null
+    };
+    let started = false;
+    const max = 25;
+    const state = {
+      plants: [],
+      garden: []
+    };
+
+    function createGardenElement(type) {
+      const element = document.createElement('img');
+      element.setAttribute('src', `images/${type}.svg`);
+      element.setAttribute('width', '100%');
+      element.setAttribute('class', type);
+      return element;
+    }
+
+    function seedWeed() {
+      let position = Math.floor(Math.random() * max);
+      if (!state.plants[position] && state.garden[position] !== 'water') {
+        let element = createGardenElement('weed');
+        plants.children[position].innerHTML = '';
+        plants.children[position].appendChild(element);
+        state.plants[position] = 'weed';
+      }
+    }
+
+    function killWeed() {
+      state.plants.forEach((plant, index) => {
+        if (plant === 'weed' && state.garden[index] === 'poison') {
+          state.plants[index] = undefined;
+          state.garden[index] = undefined;
+          plants.children[index].innerHTML = '';
+          garden.children[index].innerHTML = '';
+        }
+      });
+    }
+
+    function growCarrots() {
+      state.garden.forEach((resource, index) => {
+        if (resource === 'water') {
+          state.garden[index] = undefined;
+          garden.children[index].innerHTML = '';
+
+          let element = createGardenElement('carrot');
+          plants.children[index].innerHTML = '';
+          plants.children[index].appendChild(element);
+          state.plants[index] = 'carrot';
+        }
+      });
+    }
+
+    overlay.addEventListener('click', (event) => {
+      if (started && selection) {
+        let position = parseInt(event.target.getAttribute('id'));
+
+        if (!state.garden[position] &&
+          (
+            (selection === 'poison' && state.plants[position] === 'weed') ||
+            (selection === 'water' && state.plants[position] !== 'carrot')
+          )
+        ) {
+          let element = createGardenElement(selection);
+          garden.children[position].innerHTML = '';
+          garden.children[position].appendChild(element);
+          state.garden[position] = selection;
+        }
+      }
+    });
+
+    water.addEventListener('click', (event) => {
+      selection = 'water';
+      water.classList.add('selected');
+      poison.classList.remove('selected');
+    });
+
+    poison.addEventListener('click', (event) => {
+      selection = 'poison';
+      poison.classList.add('selected');
+      water.classList.remove('selected');
+    });
+
+    play.addEventListener('click', (event) => {
+      intervals.growCarrots = setInterval(growCarrots, 4000);
+      intervals.seedWeed = setInterval(seedWeed, 1500);
+      intervals.killWeed = setInterval(killWeed, 500);
+      play.classList.add('selected');
+      started = true;
+    });
+
+    stop.addEventListener('click', (event) => {
+      clearInterval(intervals.growCarrots);
+      clearInterval(intervals.seedWeed);
+      clearInterval(intervals.killWeed);
+      play.classList.remove('selected');
+      started = false;
+    });
+  </script>
 </body>
- </html>
+
+</html>
