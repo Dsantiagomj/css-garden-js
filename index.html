@@ -25,13 +25,13 @@
       </div>
       <hr>
       <p>Game</p>
-      <button id="play" class="control">Play</button>
-      <button id="stop" class="control">Stop</button>
+      <button id="play" class="control">(P)lay</button>
+      <button id="stop" class="control">St(O)p</button>
       <hr>
       <div class="resources">
         <p>Controls</p>
-        <button id="water" class="control">Water</button>
-        <button id="poison" class="control">Poison</button>
+        <button id="water" class="control">W(A)ter</button>
+        <button id="poison" class="control">Poi(S)on</button>
       </div>
     </div>
   </section>
@@ -149,13 +149,8 @@
   </section>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script>
-    //const overlay = document.getElementById('overlay');
     const plants = document.getElementById('plants');
     const garden = document.getElementById('garden');
-    const water = document.getElementById('water');
-    const poison = document.getElementById('poison');
-    //const play = document.getElementById('play');
-    //const stop = document.getElementById('stop');
     let selection;
     let intervals = {
       seedWeed: null,
@@ -165,16 +160,32 @@
     let started = false;
     let points = 0;
     const max = 25;
-    const state = {
-      plants: [],
-      garden: []
-    };
+    let state = {};
+
+    $(document).keypress(event => {
+      event.preventDefault();
+      switch (String.fromCharCode(event.charCode).toLowerCase()) {
+        case 'a':
+          $('#water').click();
+          break;
+        case 's':
+          $('#poison').click();
+          break;
+        case 'p':
+          $('#play').click();
+          break;
+        case 'o':
+          $('#stop').click();
+          break;
+      }
+    });
 
     function createGardenElement(type) {
       const element = document.createElement('img');
-      element.setAttribute('src', `images/${type}.svg`);
-      element.setAttribute('width', '100%');
-      element.setAttribute('class', type);
+      $(element)
+        .attr('src', `images/${type}.svg`)
+        .attr('width', '100%')
+        .attr('class', type);
       return element;
     }
 
@@ -182,8 +193,7 @@
       let position = Math.floor(Math.random() * max);
       if (!state.plants[position] && state.garden[position] !== 'water') {
         let element = createGardenElement('weed');
-        plants.children[position].innerHTML = '';
-        plants.children[position].appendChild(element);
+        $(plants.children[position]).html(element);
         state.plants[position] = 'weed';
       }
     }
@@ -193,8 +203,8 @@
         if (plant === 'weed' && state.garden[index] === 'poison') {
           state.plants[index] = undefined;
           state.garden[index] = undefined;
-          plants.children[index].innerHTML = '';
-          garden.children[index].innerHTML = '';
+          $(plants.children[index]).html('');
+          $(garden.children[index]).html('');
           points += 1;
           drawPoints();
         }
@@ -218,8 +228,33 @@
       $('#score').html(points);
     }
 
+    function draw() {
+      Object.getOwnPropertyNames(state).forEach(layer => {
+        state[layer].forEach(function (item, index) {
+          if (item) {
+            let element = createGardenElement(item);
+            $(`#${layer} .plot:nth-child(${index+1})`).html(element);
+          }
+        });
+      });
+
+      // state.plants.forEach(function (item, index) {
+      //   if (item) {
+      //     let element = createGardenElement(item);
+      //     $(plants.children[index]).html(element);
+      //   }
+      // });
+
+      // state.garden.forEach(function (item, index) {
+      //   if (item) {
+      //     let element = createGardenElement(item);
+      //     $(garden.children[index]).html(element);
+      //   }
+      // });
+    }
+
     $('#overlay').click((event) => {
-      if (started && selection) {
+      if (started) {
         let position = parseInt($(event.target).attr('id'));
 
         if (state.plants[position] === 'carrot') {
@@ -228,7 +263,7 @@
           points += 2;
           drawPoints();
         } else {
-          if (!state.garden[position] &&
+          if (selection && !state.garden[position] &&
             ((selection === 'poison' && state.plants[position] === 'weed') ||
               (selection === 'water' && !state.plants[position]))
           ) {
@@ -247,6 +282,17 @@
     });
 
     $('#play').click(function (event) {
+      const localState = localStorage.getItem('state');
+      if (localState) {
+        state = JSON.parse(localState);
+      } else {
+        state = {
+          plants: [],
+          garden: []
+        };
+      }
+      draw();
+
       intervals.growCarrots = setInterval(growCarrots, 4000);
       intervals.seedWeed = setInterval(seedWeed, 1500);
       intervals.killWeed = setInterval(killWeed, 500);
@@ -260,6 +306,7 @@
       clearInterval(intervals.killWeed);
       $('#play').removeClass('selected');
       started = false;
+      localStorage.setItem('state', JSON.stringify(state));
     });
   </script>
 </body>
