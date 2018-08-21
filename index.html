@@ -17,9 +17,17 @@
       </div>
     </div>
     <div id="instructions">
+      <div id="points">
+        <p>
+          Points:
+          <span id="score">0</span>
+        </p>
+      </div>
+      <hr>
       <p>Game</p>
       <button id="play" class="control">Play</button>
       <button id="stop" class="control">Stop</button>
+      <hr>
       <p>Controls</p>
       <button id="water" class="control">Water</button>
       <button id="poison" class="control">Poison</button>
@@ -152,6 +160,7 @@
       growCarrots: null
     };
     let started = false;
+    let points = 0;
     const max = 25;
     const state = {
       plants: [],
@@ -183,6 +192,8 @@
           state.garden[index] = undefined;
           plants.children[index].innerHTML = '';
           garden.children[index].innerHTML = '';
+          points += 1;
+          drawPoints();
         }
       });
     }
@@ -201,14 +212,26 @@
       });
     }
 
+    function drawPoints() {
+      const score = document.getElementById('score');
+      score.innerHTML = `${points}`;
+    }
+
     overlay.addEventListener('click', (event) => {
       if (started && selection) {
         let position = parseInt(event.target.getAttribute('id'));
 
+        if (state.plants[position] === 'carrot') {
+          state.plants[position] = undefined;
+          plants.children[position].innerHTML = '';
+          points += 2;
+          drawPoints();
+        }
+
         if (!state.garden[position] &&
           (
             (selection === 'poison' && state.plants[position] === 'weed') ||
-            (selection === 'water' && state.plants[position] !== 'carrot')
+            (selection === 'water' && !state.plants[position])
           )
         ) {
           let element = createGardenElement(selection);

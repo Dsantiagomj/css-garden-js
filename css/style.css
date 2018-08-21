@@ -228,3 +228,8 @@ button.selected {
 .reveal {
   display: block;
 }
+
+#points span {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 24px;
+}
