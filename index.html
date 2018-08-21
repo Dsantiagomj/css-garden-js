@@ -28,9 +28,11 @@
       <button id="play" class="control">Play</button>
       <button id="stop" class="control">Stop</button>
       <hr>
-      <p>Controls</p>
-      <button id="water" class="control">Water</button>
-      <button id="poison" class="control">Poison</button>
+      <div class="resources">
+        <p>Controls</p>
+        <button id="water" class="control">Water</button>
+        <button id="poison" class="control">Poison</button>
+      </div>
     </div>
   </section>
   <section id="view">
@@ -145,14 +147,15 @@
       </div>
     </div>
   </section>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script>
-    const overlay = document.getElementById('overlay');
+    //const overlay = document.getElementById('overlay');
     const plants = document.getElementById('plants');
     const garden = document.getElementById('garden');
     const water = document.getElementById('water');
     const poison = document.getElementById('poison');
-    const play = document.getElementById('play');
-    const stop = document.getElementById('stop');
+    //const play = document.getElementById('play');
+    //const stop = document.getElementById('stop');
     let selection;
     let intervals = {
       seedWeed: null,
@@ -202,71 +205,60 @@
       state.garden.forEach((resource, index) => {
         if (resource === 'water') {
           state.garden[index] = undefined;
-          garden.children[index].innerHTML = '';
+          $(garden.children[index]).html('');
 
           let element = createGardenElement('carrot');
-          plants.children[index].innerHTML = '';
-          plants.children[index].appendChild(element);
+          $(plants.children[index]).html(element);
           state.plants[index] = 'carrot';
         }
       });
     }
 
     function drawPoints() {
-      const score = document.getElementById('score');
-      score.innerHTML = `${points}`;
+      $('#score').html(points);
     }
 
-    overlay.addEventListener('click', (event) => {
+    $('#overlay').click((event) => {
       if (started && selection) {
-        let position = parseInt(event.target.getAttribute('id'));
+        let position = parseInt($(event.target).attr('id'));
 
         if (state.plants[position] === 'carrot') {
           state.plants[position] = undefined;
-          plants.children[position].innerHTML = '';
+          $(plants.children[position]).html('');
           points += 2;
           drawPoints();
-        }
-
-        if (!state.garden[position] &&
-          (
-            (selection === 'poison' && state.plants[position] === 'weed') ||
-            (selection === 'water' && !state.plants[position])
-          )
-        ) {
-          let element = createGardenElement(selection);
-          garden.children[position].innerHTML = '';
-          garden.children[position].appendChild(element);
-          state.garden[position] = selection;
+        } else {
+          if (!state.garden[position] &&
+            ((selection === 'poison' && state.plants[position] === 'weed') ||
+              (selection === 'water' && !state.plants[position]))
+          ) {
+            let element = createGardenElement(selection);
+            $(garden.children[position]).html(element);
+            state.garden[position] = selection;
+          }
         }
       }
     });
 
-    water.addEventListener('click', (event) => {
-      selection = 'water';
-      water.classList.add('selected');
-      poison.classList.remove('selected');
+    $('.resources .control').click(function (event) {
+      selection = $(this).attr('id');
+      $('.resources .control').removeClass('selected');
+      $(this).addClass('selected');
     });
 
-    poison.addEventListener('click', (event) => {
-      selection = 'poison';
-      poison.classList.add('selected');
-      water.classList.remove('selected');
-    });
-
-    play.addEventListener('click', (event) => {
+    $('#play').click(function (event) {
       intervals.growCarrots = setInterval(growCarrots, 4000);
       intervals.seedWeed = setInterval(seedWeed, 1500);
       intervals.killWeed = setInterval(killWeed, 500);
-      play.classList.add('selected');
+      $(this).addClass('selected');
       started = true;
     });
 
-    stop.addEventListener('click', (event) => {
+    $('#stop').click(function (event) {
       clearInterval(intervals.growCarrots);
       clearInterval(intervals.seedWeed);
       clearInterval(intervals.killWeed);
-      play.classList.remove('selected');
+      $('#play').removeClass('selected');
       started = false;
     });
   </script>
