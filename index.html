@@ -150,6 +150,9 @@
   </section>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js "></script>
   <script>
+    /*
+     * Configuration object
+     */
     const game = {
       started: false,
       points: 0,
@@ -182,10 +185,15 @@
         }
       }
     }
-
+    /*
+     * Application State
+     */
     let state = {};
 
     function init() {
+      /*
+       * Load previous application state from LocalStorage
+       */
       const localState = localStorage.getItem('state');
       if (localState) {
         state = JSON.parse(localState);
@@ -198,6 +206,11 @@
       draw();
     }
 
+    /*
+     * Create a HTML Element based on type param
+     * @param type:String
+     * @return HTMLElement
+     */
     function createGardenElement(type) {
       const element = document.createElement('img');
       $(element)
@@ -207,6 +220,9 @@
       return element;
     }
 
+    /*
+     *  Draw the application state in the layers
+     */
     function draw() {
       Object.getOwnPropertyNames(state).forEach(layer => {
         state[layer].forEach(function (item, index) {
@@ -222,10 +238,16 @@
       $('#score .points').html(game.points);
     }
 
+    /*
+     * Set document ready event to initialize the app
+     */
     $(document).ready(() => {
       init();
     });
 
+    /*
+     * Binding key events for controls
+     */
     $(document).keypress(event => {
       event.preventDefault();
       switch (String.fromCharCode(event.charCode).toLowerCase()) {
@@ -244,6 +266,9 @@
       }
     });
 
+    /*
+     * Generate random position set seed in the application state
+     */
     function seedWeed() {
       let position = Math.floor(Math.random() * game.board.size);
       if (!state.plants[position] && state.garden[position] !== 'water') {
@@ -251,6 +276,10 @@
       }
     }
 
+    /*
+     * Verify if the poison is set in the same position of the weed
+     * to remove it
+     */
     function killWeed() {
       state.plants.forEach((plant, index) => {
         if (plant === 'weed' && state.garden[index] === 'poison') {
@@ -261,6 +290,9 @@
       });
     }
 
+    /*
+     * Verify if water is set to grow carrot
+     */
     function growCarrots() {
       state.garden.forEach((resource, index) => {
         if (resource === 'water') {
@@ -270,6 +302,10 @@
       });
     }
 
+    /*
+     * Set clic event handler on the overlay layer to capture
+     * the position of the grid
+     */
     $('#overlay').click((event) => {
       if (game.started) {
         let position = $('#overlay .plot').index(event.target);
@@ -287,6 +323,9 @@
       }
     });
 
+    /*
+     * Binding controls key events
+     */
     $('.resources .control').click(function (event) {
       game.resources.selection = $(this).attr('id');
       $('.resources .control').removeClass('selected');
