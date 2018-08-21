@@ -17,16 +17,17 @@
       </div>
     </div>
     <div id="instructions">
-      <div id="points">
-        <p>
-          Points:
-          <span id="score">0</span>
+      <div id="score">
+        <p>Points:
+          <span class="points">0</span>
         </p>
       </div>
       <hr>
-      <p>Game</p>
-      <button id="play" class="control">(P)lay</button>
-      <button id="stop" class="control">St(O)p</button>
+      <div id="controls">
+        <p>Game</p>
+        <button id="play" class="control">(P)lay</button>
+        <button id="stop" class="control">St(O)p</button>
+      </div>
       <hr>
       <div class="resources">
         <p>Controls</p>
@@ -38,31 +39,31 @@
   <section id="view">
     <div id="board">
       <div id="overlay">
-        <span class="plot" id="0"></span>
-        <span class="plot" id="1"></span>
-        <span class="plot" id="2"></span>
-        <span class="plot" id="3"></span>
-        <span class="plot" id="4"></span>
-        <span class="plot" id="5"></span>
-        <span class="plot" id="6"></span>
-        <span class="plot" id="7"></span>
-        <span class="plot" id="8"></span>
-        <span class="plot" id="9"></span>
-        <span class="plot" id="10"></span>
-        <span class="plot" id="11"></span>
-        <span class="plot" id="12"></span>
-        <span class="plot" id="13"></span>
-        <span class="plot" id="14"></span>
-        <span class="plot" id="15"></span>
-        <span class="plot" id="16"></span>
-        <span class="plot" id="17"></span>
-        <span class="plot" id="18"></span>
-        <span class="plot" id="19"></span>
-        <span class="plot" id="20"></span>
-        <span class="plot" id="21"></span>
-        <span class="plot" id="22"></span>
-        <span class="plot" id="23"></span>
-        <span class="plot" id="24"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
+        <span class="plot"></span>
       </div>
       <div id="plants">
         <span class="plot"></span>
@@ -147,20 +148,83 @@
       </div>
     </div>
   </section>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js "></script>
   <script>
-    const plants = document.getElementById('plants');
-    const garden = document.getElementById('garden');
-    let selection;
-    let intervals = {
-      seedWeed: null,
-      killWeed: null,
-      growCarrots: null
-    };
-    let started = false;
-    let points = 0;
-    const max = 25;
+    const game = {
+      started: false,
+      points: 0,
+      board: {
+        size: 25
+      },
+      resources: {
+        selection: undefined,
+      },
+      loops: {
+        draw: {
+          interval: undefined,
+          time: 100,
+        },
+        weed: {
+          seed: {
+            interval: undefined,
+            time: 1500
+          },
+          kill: {
+            interval: undefined,
+            time: 1000
+          }
+        },
+        carrot: {
+          grow: {
+            interval: undefined,
+            time: 3000
+          }
+        }
+      }
+    }
+
     let state = {};
+
+    function init() {
+      const localState = localStorage.getItem('state');
+      if (localState) {
+        state = JSON.parse(localState);
+      } else {
+        state = {
+          plants: [],
+          garden: []
+        };
+      }
+      draw();
+    }
+
+    function createGardenElement(type) {
+      const element = document.createElement('img');
+      $(element)
+        .attr('src', `images/${type}.svg`)
+        .attr('width', '100%')
+        .attr('class', type);
+      return element;
+    }
+
+    function draw() {
+      Object.getOwnPropertyNames(state).forEach(layer => {
+        state[layer].forEach(function (item, index) {
+          let $tag = $(`#${layer} .plot:nth-child(${index+1})`)
+          if (item) {
+            let element = createGardenElement(item);
+            $tag.html(element);
+          } else {
+            $tag.html('');
+          }
+        });
+      });
+      $('#score .points').html(game.points);
+    }
+
+    $(document).ready(() => {
+      init();
+    });
 
     $(document).keypress(event => {
       event.preventDefault();
@@ -180,20 +244,9 @@
       }
     });
 
-    function createGardenElement(type) {
-      const element = document.createElement('img');
-      $(element)
-        .attr('src', `images/${type}.svg`)
-        .attr('width', '100%')
-        .attr('class', type);
-      return element;
-    }
-
     function seedWeed() {
-      let position = Math.floor(Math.random() * max);
+      let position = Math.floor(Math.random() * game.board.size);
       if (!state.plants[position] && state.garden[position] !== 'water') {
-        let element = createGardenElement('weed');
-        $(plants.children[position]).html(element);
         state.plants[position] = 'weed';
       }
     }
@@ -203,10 +256,7 @@
         if (plant === 'weed' && state.garden[index] === 'poison') {
           state.plants[index] = undefined;
           state.garden[index] = undefined;
-          $(plants.children[index]).html('');
-          $(garden.children[index]).html('');
-          points += 1;
-          drawPoints();
+          game.points += 1;
         }
       });
     }
@@ -215,97 +265,50 @@
       state.garden.forEach((resource, index) => {
         if (resource === 'water') {
           state.garden[index] = undefined;
-          $(garden.children[index]).html('');
-
-          let element = createGardenElement('carrot');
-          $(plants.children[index]).html(element);
           state.plants[index] = 'carrot';
         }
       });
     }
 
-    function drawPoints() {
-      $('#score').html(points);
-    }
-
-    function draw() {
-      Object.getOwnPropertyNames(state).forEach(layer => {
-        state[layer].forEach(function (item, index) {
-          if (item) {
-            let element = createGardenElement(item);
-            $(`#${layer} .plot:nth-child(${index+1})`).html(element);
-          }
-        });
-      });
-
-      // state.plants.forEach(function (item, index) {
-      //   if (item) {
-      //     let element = createGardenElement(item);
-      //     $(plants.children[index]).html(element);
-      //   }
-      // });
-
-      // state.garden.forEach(function (item, index) {
-      //   if (item) {
-      //     let element = createGardenElement(item);
-      //     $(garden.children[index]).html(element);
-      //   }
-      // });
-    }
-
     $('#overlay').click((event) => {
-      if (started) {
-        let position = parseInt($(event.target).attr('id'));
-
+      if (game.started) {
+        let position = $('#overlay .plot').index(event.target);
         if (state.plants[position] === 'carrot') {
           state.plants[position] = undefined;
-          $(plants.children[position]).html('');
-          points += 2;
-          drawPoints();
+          game.points += 2;
         } else {
-          if (selection && !state.garden[position] &&
-            ((selection === 'poison' && state.plants[position] === 'weed') ||
-              (selection === 'water' && !state.plants[position]))
+          if (game.resources.selection && !state.garden[position] &&
+            ((game.resources.selection === 'poison' && state.plants[position] === 'weed') ||
+              (game.resources.selection === 'water' && !state.plants[position]))
           ) {
-            let element = createGardenElement(selection);
-            $(garden.children[position]).html(element);
-            state.garden[position] = selection;
+            state.garden[position] = game.resources.selection;
           }
         }
       }
     });
 
     $('.resources .control').click(function (event) {
-      selection = $(this).attr('id');
+      game.resources.selection = $(this).attr('id');
       $('.resources .control').removeClass('selected');
       $(this).addClass('selected');
     });
 
     $('#play').click(function (event) {
-      const localState = localStorage.getItem('state');
-      if (localState) {
-        state = JSON.parse(localState);
-      } else {
-        state = {
-          plants: [],
-          garden: []
-        };
-      }
-      draw();
-
-      intervals.growCarrots = setInterval(growCarrots, 4000);
-      intervals.seedWeed = setInterval(seedWeed, 1500);
-      intervals.killWeed = setInterval(killWeed, 500);
+      game.loops.carrot.grow.interval = setInterval(growCarrots, game.loops.carrot.grow.time);
+      game.loops.weed.seed.interval = setInterval(seedWeed, game.loops.weed.seed.time);
+      game.loops.weed.kill.interval = setInterval(killWeed, game.loops.weed.kill.time);
+      game.loops.draw.interval = setInterval(draw, game.loops.draw.time);
       $(this).addClass('selected');
-      started = true;
+      game.started = true;
     });
 
     $('#stop').click(function (event) {
-      clearInterval(intervals.growCarrots);
-      clearInterval(intervals.seedWeed);
-      clearInterval(intervals.killWeed);
+      clearInterval(game.loops.carrot.grow.interval);
+      clearInterval(game.loops.weed.seed.interval);
+      clearInterval(game.loops.weed.kill.interval);
+      clearInterval(game.loops.draw.interval);
       $('#play').removeClass('selected');
-      started = false;
+      game.started = false;
       localStorage.setItem('state', JSON.stringify(state));
     });
   </script>
